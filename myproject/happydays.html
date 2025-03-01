@@ -14,7 +14,6 @@
             position: relative;
             overflow: hidden;
         }
-        /* 泡泡背景 */
         .bubble {
             position: absolute;
             border-radius: 50%;
@@ -93,7 +92,6 @@
     </div>
 
     <script>
-        // 创建泡泡背景
         function createBubbles() {
             const bubbleCount = 20;
             for(let i = 0; i < bubbleCount; i++) {
@@ -119,7 +117,6 @@
                 `已经过去了<br>${diffDays}天`;
         }
 
-        // 页面加载时创建泡泡和计算天数
         window.onload = function() {
             createBubbles();
             calculateDays();
