@@ -107,10 +107,8 @@
     </div>
 
     <script>
-        // 存储图片的数组
         let photos = [];
 
-        // 从localStorage加载保存的图片
         window.onload = function() {
             const savedPhotos = localStorage.getItem('photos');
             if (savedPhotos) {
@@ -119,7 +117,6 @@
             }
         }
 
-        // 监听文件上传
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const files = e.target.files;
             for (let file of files) {
@@ -133,7 +130,6 @@
             }
         });
 
-        // 显示图片
         function displayPhotos() {
             const grid = document.getElementById('photoGrid');
             grid.innerHTML = '';
@@ -148,7 +144,6 @@
             });
         }
 
-        // 删除图片
         function deletePhoto(index) {
             if (confirm('确定要删除这张图片吗？')) {
                 photos.splice(index, 1);
@@ -157,12 +152,10 @@
             }
         }
 
-        // 保存图片到localStorage
         function savePhotos() {
             localStorage.setItem('photos', JSON.stringify(photos));
         }
 
-        // 拖拽上传
         const uploadArea = document.querySelector('.upload-area');
         
         uploadArea.addEventListener('dragover', (e) => {
