@@ -19,6 +19,7 @@
             text-align: center;
             font-size: 2em;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
         }
         .modules-container {
             display: flex;
@@ -42,7 +43,6 @@
         }
         .module-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
         .module-content {
             position: absolute;
@@ -66,10 +66,22 @@
             color: #666;
             text-align: center;
         }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: white;
+            color: #FF69B4;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="header">
+        <button class="back-button" onclick="location.href='login.html'">返回</button>
         <h1>Memory</h1>
     </div>
     <div class="modules-container">
