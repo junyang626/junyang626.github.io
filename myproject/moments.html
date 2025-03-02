@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>此刻</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #FFE4E1;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #FF69B4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 2em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .add-button {
+            background-color: #FF69B4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .add-button:hover {
+            background-color: #FF1493;
+        }
+        .moment-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .moment-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+        .moment-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .mood-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .mood-selector {
+            display: none;
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .mood-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .edit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .edit-content {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+        }
+        .edit-textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 1.1em;
+            resize: none;
+        }
+        .edit-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: white;
+            color: #FF69B4;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-button" onclick="location.href='memory.html'">返回</button>
+        <h1>此刻</h1>
+    </div>
+    <div class="container">
+        <button class="add-button" onclick="showEditModal()">
+            <span>+</span> 记录此刻
+        </button>
+        <div id="momentsList"></div>
+    </div>
+
+    <!-- 编辑弹窗 -->
+    <div class="edit-modal" id="editModal">
+        <div class="edit-content">
+            <h2>记录此刻</h2>
+            <textarea class="edit-textarea" id="momentText" placeholder="写下此刻的想法..."></textarea>
+            <div class="mood-dot" id="moodDot" onclick="toggleMoodSelector()" style="background-color: #FF69B4;"></div>
+            <div class="mood-selector" id="moodSelector">
+                <div class="mood-color" style="background-color: #FF69B4;" onclick="selectMood('#FF69B4')"></div>
+                <div class="mood-color" style="background-color: #FFB6C1;" onclick="selectMood('#FFB6C1')"></div>
+                <div class="mood-color" style="background-color: #87CEEB;" onclick="selectMood('#87CEEB')"></div>
+                <div class="mood-color" style="background-color: #98FB98;" onclick="selectMood('#98FB98')"></div>
+                <div class="mood-color" style="background-color: #DDA0DD;" onclick="selectMood('#DDA0DD')"></div>
+            </div>
+            <div class="edit-buttons">
+                <button onclick="hideEditModal()">取消</button>
+                <button onclick="saveMoment()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let moments = [];
+        let currentMoodColor = '#FF69B4';
+
+        // 加载保存的记录
+        window.onload = function() {
+            const savedMoments = localStorage.getItem('moments');
+            if (savedMoments) {
+                moments = JSON.parse(savedMoments);
+                displayMoments();
+            }
+        }
+
+        // 显示编辑弹窗
+        function showEditModal() {
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        // 隐藏编辑弹窗
+        function hideEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('momentText').value = '';
+            document.getElementById('moodSelector').style.display = 'none';
+        }
+
+        // 切换心情选择器
+        function toggleMoodSelector() {
+            const selector = document.getElementById('moodSelector');
+            selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 选择心情颜色
+        function selectMood(color) {
+            currentMoodColor = color;
+            document.getElementById('moodDot').style.backgroundColor = color;
+            document.getElementById('moodSelector').style.display = 'none';
+        }
+
+        // 保存记录
+        function saveMoment() {
+            const text = document.getElementById('momentText').value.trim();
+            if (text) {
+                const moment = {
+                    text: text,
+                    mood: currentMoodColor,
+                    timestamp: new Date().toISOString()
+                };
+                moments.unshift(moment); // 添加到开头
+                localStorage.setItem('moments', JSON.stringify(moments));
+                displayMoments();
+                hideEditModal();
+            }
+        }
+
+        // 显示所有记录
+        function displayMoments() {
+            const list = document.getElementById('momentsList');
+            list.innerHTML = '';
+            moments.forEach((moment, index) => {
+                const date = new Date(moment.timestamp);
+                const formattedDate = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+                
+                const div = document.createElement('div');
+                div.className = 'moment-card';
+                div.innerHTML = `
+                    <div class="mood-dot" style="background-color: ${moment.mood};"></div>
+                    <div class="moment-content">${moment.text}</div>
+                    <div class="moment-footer">
+                        <span>${formattedDate}</span>
+                        <button onclick="deleteMoment(${index})">删除</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // 删除记录
+        function deleteMoment(index) {
+            if (confirm('确定要删除这条记录吗？')) {
+                moments.splice(index, 1);
+                localStorage.setItem('moments', JSON.stringify(moments));
+                displayMoments();
+            }
+        }
+    </script>
+</body>
+</html>
