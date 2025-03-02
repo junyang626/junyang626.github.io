@@ -86,7 +86,7 @@
         <h1>Happy Days</h1>
     </div>
     <div class="container">
-        <p class="date-text">起始日期：2015-08-28</p>
+        <p class="date-text">起始日期：2015-08-27</p>
         <div class="result" id="result"></div>
         <button onclick="calculateDays()">刷新天数</button>
     </div>
@@ -108,7 +108,7 @@
         }
 
         function calculateDays() {
-            const startDate = new Date('2015-08-28');
+            const startDate = new Date('2015-08-27');
             const today = new Date();
             const diffTime = Math.abs(today - startDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
